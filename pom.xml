@@ -17,7 +17,7 @@
   <distributionManagement>
         <repository>
             <id>myLocal</id>
-            <url>file:///C:/Adobe<url>
+            <url>file:///C:/Adobe</url>
         </repository>
     </distributionManagement>
     
