@@ -79,6 +79,7 @@ public class jenkinsJobSETValidationScript {
 				String[] values = line.split(DELIMITER);
 				startID++;
 				noOfLines++;
+				System.out.println(startID+"-D"+values[10].toUpperCase()+ values[8].substring(0, 2).toUpperCase()+values[11].toUpperCase()+values[12]+values[13]+values[9].toUpperCase()+email+values[0]);
 				  sqlStatements.add(String.format(sqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(), values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0]));
 				  cqlStatements.add(String.format(cqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(),values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0], false, false, false));
 				
