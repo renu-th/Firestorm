@@ -25,7 +25,7 @@ public class jenkinsJobSETValidationScript {
 	private static final String CQL_OUTFILE = "\\DBScripts\\cqlInsertScripts.txt";
 	final static String sqlTemplate = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
 	final static String cqlTemplate = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
-
+	
 	/**
 	 * Code to generate Insert Scripts for STE DB - MySQL & Cassandra Scripts
 	 */
@@ -60,13 +60,16 @@ public class jenkinsJobSETValidationScript {
 
 	public static void main(String[] args) {
 		List<String> sqlStatements = new ArrayList<>();
-		List<String> cqlStatements = new ArrayList<>();
+		List<String> cqlStatements = new ArrayList<>();		
 		String csvFile = System.getenv("csvFile"); // Jenkins Build Parameter - Input CSV File
+		if(!csvFile.isEmpty())
+		{
 		String email = System.getenv("EMAIL"); // Jenkins Build Parameter
+		String jenkinsWorkspace = System.getenv("WORKSPACE");
 		System.out.println(email);
 		int startID = generaterandomID();
 		try {
-			FileReader reader = new FileReader(csvFile);
+			FileReader reader = new FileReader(jenkinsWorkspace+"//"+csvFile);
 			BufferedReader br = new BufferedReader(reader);
 			String line = br.readLine();
 			int noOfLines = 0;
@@ -87,6 +90,9 @@ public class jenkinsJobSETValidationScript {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
+		}
+		else
+			System.out.println("No File Found");
 	}
 
 }
