@@ -16,8 +16,8 @@
 
   <distributionManagement>
         <repository>
-            <id>myMavenRepo.write</id>
-            <url>https://mymavenrepo.com/repo/9Q8JoRpymi4UGK8HzbVq/</url>
+            <id>myLocal</id>
+            <url>file:///C:/Adobe<url>
         </repository>
     </distributionManagement>
     
