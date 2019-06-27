@@ -62,15 +62,15 @@ public class jenkinsJobSETValidationScript {
 		List<String> sqlStatements = new ArrayList<>();
 		List<String> cqlStatements = new ArrayList<>();		
 		String csvFile = System.getenv("DATA_FILE"); // Jenkins Build Parameter - Input CSV File
-		if(!csvFile.isEmpty())
-		{
 		String email = System.getenv("EMAIL"); // Jenkins Build Parameter
 		String jenkinsWorkspace = System.getenv("WORKSPACE");
 		System.out.println(email);
 		System.out.println(jenkinsWorkspace+"/"+csvFile);
+		if(!csvFile.isEmpty())
+		{		
 		int startID = generaterandomID();
 		try {
-			FileReader reader = new FileReader(csvFile);
+			FileReader reader = new FileReader(jenkinsWorkspace+"/"+csvFile);
 			BufferedReader br = new BufferedReader(reader);
 			String line = br.readLine();
 			int noOfLines = 0;
