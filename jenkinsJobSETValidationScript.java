@@ -23,13 +23,13 @@ public class jenkinsJobSETValidationScript {
 	//public final static String csvFile = "C:\\Adobe\\CacheBack\\DBScripts\\Batch2BadData\\batch2Data.csv";
 	private static final String SQL_OUTFILE = "\\DBScripts\\sqlInsertScripts.sql";
 	private static final String CQL_OUTFILE = "\\DBScripts\\cqlInsertScripts.txt";
-	final static String sqlTemplate = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
-	final static String cqlTemplate = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
-	
+	private final static String sqlTemplate = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
+	private final static String cqlTemplate = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
+	private static String jenkinsWorkspace;
 	/**
 	 * Code to generate Insert Scripts for STE DB - MySQL & Cassandra Scripts
 	 */
-
+ 
 	public static int generaterandomID() {
 		int randNum = 0;
 		randNum = (int) ((Math.random() * 90000000) + 10000000);
@@ -37,7 +37,7 @@ public class jenkinsJobSETValidationScript {
 	}
 
 	public static void writeToFile(List<String> sqlStatements, String fileName) {
-		Path fileP = Paths.get(fileName);
+		Path fileP = Paths.get(jenkinsWorkspace+ fileName);
 		try {
 			Files.write(fileP, sqlStatements, StandardCharsets.UTF_8);
 		} catch (IOException e) {
@@ -65,9 +65,9 @@ public class jenkinsJobSETValidationScript {
 		String email = System.getenv("EMAIL"); // Jenkins Build Parameter
 		String jenkinsWorkspace = System.getenv("WORKSPACE");
 		System.out.println(email);
-		System.out.println(jenkinsWorkspace+"\\"+csvFile);
 		if(!csvFile.isEmpty())
-		{		
+		{
+		
 		int startID = generaterandomID();
 		try {
 			FileReader reader = new FileReader(jenkinsWorkspace+"\\"+csvFile);
@@ -80,9 +80,8 @@ public class jenkinsJobSETValidationScript {
 				startID++;
 				noOfLines++;
 				System.out.println(startID+"-D"+values[10].toUpperCase()+ values[8].substring(0, 2).toUpperCase()+values[11].toUpperCase()+values[12]+values[13]+values[9].toUpperCase()+email+values[0]);
-				  sqlStatements.add(String.format(sqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(), values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0]));
-				  cqlStatements.add(String.format(cqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(),values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0], false, false, false));
-				
+				sqlStatements.add(String.format(sqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(), values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0]));
+				cqlStatements.add(String.format(cqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(),values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0], false, false, false));	
 			}
 			writeToFile(sqlStatements, SQL_OUTFILE); // SQL Scripts
 			writeToFile(cqlStatements, CQL_OUTFILE); // Cassandra Scripts
