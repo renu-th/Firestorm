@@ -63,7 +63,7 @@ public class jenkinsJobSETValidationScript {
 		List<String> cqlStatements = new ArrayList<>();		
 		String csvFile = System.getenv("DATA_FILE"); // Jenkins Build Parameter - Input CSV File
 		String email = System.getenv("EMAIL"); // Jenkins Build Parameter
-		String jenkinsWorkspace = System.getenv("WORKSPACE");
+		jenkinsWorkspace = System.getenv("WORKSPACE");
 		System.out.println(email);
 		if(!csvFile.isEmpty())
 		{
