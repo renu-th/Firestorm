@@ -67,10 +67,10 @@ public class jenkinsJobSETValidationScript {
 		String email = System.getenv("EMAIL"); // Jenkins Build Parameter
 		String jenkinsWorkspace = System.getenv("WORKSPACE");
 		System.out.println(email);
-		System.out.println(jenkinsWorkspace+"//"+csvFile);
+		System.out.println(jenkinsWorkspace+"/"+csvFile);
 		int startID = generaterandomID();
 		try {
-			FileReader reader = new FileReader(jenkinsWorkspace+"//"+csvFile);
+			FileReader reader = new FileReader(csvFile);
 			BufferedReader br = new BufferedReader(reader);
 			String line = br.readLine();
 			int noOfLines = 0;
