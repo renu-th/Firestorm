@@ -48,7 +48,7 @@ public class STEValidation {
     public static void main(String[] args) {
         List<String> sqlStatements = new ArrayList<String>();
         List<String> cqlStatements = new ArrayList<String>();
-        String csvFile = System.getProperty("DATA_FILE"); // Jenkins Build Parameter - Input CSV File
+        String csvFile = System.getenv("DATA_FILE.csv"); // Jenkins Build Parameter - Input CSV File
         String email = System.getProperty("EMAIL"); // Jenkins Build Parameter - Email
         jenkinsWorkspace = System.getProperty("WORKSPACE"); //Jenkins Current Workspace
         if (!csvFile.isEmpty()) {
