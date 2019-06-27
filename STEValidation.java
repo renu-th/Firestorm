@@ -24,7 +24,7 @@ public class STEValidation {
     private static final String CQL_OUTFILE = "\\cqlInsertScripts.txt";
     private static final String SQL_TEMPLATE = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
     private static final String CQL_TEMPLATE = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
-    private static final String FILE_NAME = "DATA_FILE.csv";
+    private static final String FILE_NAME = "DATA_FILE";
     
     private static String jenkinsWorkspace;
     private static String email;
