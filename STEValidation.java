@@ -52,7 +52,6 @@ public class STEValidation {
     }
 
     public static void writeToFile(List<String> sqlStatements, String fileName) {
-        //Path fileP = Paths.get(jenkinsWorkspace + fileName);
         Path fileP = Paths.get(outFilePath);
         try {
             Files.write(fileP, sqlStatements, StandardCharsets.UTF_8);
@@ -62,13 +61,14 @@ public class STEValidation {
     }
 
     public static void fetchCommandLineArgs(String[] cmdLinArgs) {
-        if (cmdLinArgs.length > 0) {
+        if (cmdLinArgs.length > 0 && cmdLinArgs.length == 3) {
             email = cmdLinArgs[0];
             inFilePath = cmdLinArgs[1];
             outFilePath = cmdLinArgs[2];
             System.out.println(inFilePath);
+            System.out.println(outFilePath);
         } else {
-            System.out.println("Email not provided as Command Line Argument.");
+            System.out.println("Not enough Command Line Arguments being passed.");
         }
 
     }
@@ -78,10 +78,8 @@ public class STEValidation {
         List<String> cqlStatements = new ArrayList<String>();
 
         fetchCommandLineArgs(args);
-        //jenkinsWorkspace = System.getenv("WORKSPACE"); //Jenkins Current Workspace
 
         try {
-            //FileReader reader = new FileReader(jenkinsWorkspace + "\\" + FILE_NAME);
             FileReader reader = new FileReader(inFilePath);
             br = new BufferedReader(reader);
             String line = br.readLine();
