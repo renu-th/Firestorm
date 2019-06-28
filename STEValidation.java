@@ -38,11 +38,10 @@ public class STEValidation {
     private static final String CQL_OUTFILE = "\\cqlInsertScripts.txt";
     private static final String SQL_TEMPLATE = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
     private static final String CQL_TEMPLATE = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
-    private static final String FILE_NAME = "DATA_FILE";
     private static final String BOOL_VALUE = "False";
 
-    private static String infilePath;
-    private static String outfilePath;
+    private static String inFilePath;
+    private static String outFilePath;
     private static String email;
     private static BufferedReader br;
 
@@ -54,7 +53,7 @@ public class STEValidation {
 
     public static void writeToFile(List<String> sqlStatements, String fileName) {
         //Path fileP = Paths.get(jenkinsWorkspace + fileName);
-        Path fileP = Paths.get(outfilePath);
+        Path fileP = Paths.get(outFilePath);
         try {
             Files.write(fileP, sqlStatements, StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -65,8 +64,9 @@ public class STEValidation {
     public static void fetchCommandLineArgs(String[] cmdLinArgs) {
         if (cmdLinArgs.length > 0) {
             email = cmdLinArgs[0];
-            infilePath = cmdLinArgs[1];
-            System.out.println(infilePath);
+            inFilePath = cmdLinArgs[1];
+            outFilePath = cmdLinArgs[2];
+            System.out.println(inFilePath);
         } else {
             System.out.println("Email not provided as Command Line Argument.");
         }
@@ -82,7 +82,7 @@ public class STEValidation {
 
         try {
             //FileReader reader = new FileReader(jenkinsWorkspace + "\\" + FILE_NAME);
-            FileReader reader = new FileReader(infilePath);
+            FileReader reader = new FileReader(inFilePath);
             br = new BufferedReader(reader);
             String line = br.readLine();
             int noOfLines = 0;
