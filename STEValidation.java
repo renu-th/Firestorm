@@ -1,3 +1,17 @@
+/*************************************************************************
+
+ADOBE CONFIDENTIAL
+Copyright 2019 Adobe
+All Rights Reserved.
+NOTICE: All information contained herein is, and remains
+the property of Adobe and its suppliers, if any. The intellectual
+and technical concepts contained herein are proprietary to Adobe
+and its suppliers and are protected by all applicable intellectual
+property laws, including trade secret and copyright laws.
+Dissemination of this information or reproduction of this material
+is strictly forbidden unless prior written permission is obtained
+from Adobe.
+**************************************************************************/
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,7 +41,8 @@ public class STEValidation {
     private static final String FILE_NAME = "DATA_FILE";
     private static final String BOOL_VALUE = "False";
 
-    private static String jenkinsWorkspace;
+    private static String infilePath;
+    private static String outfilePath;
     private static String email;
     private static BufferedReader br;
 
@@ -38,7 +53,8 @@ public class STEValidation {
     }
 
     public static void writeToFile(List<String> sqlStatements, String fileName) {
-        Path fileP = Paths.get(jenkinsWorkspace + fileName);
+        //Path fileP = Paths.get(jenkinsWorkspace + fileName);
+        Path fileP = Paths.get(outfilePath);
         try {
             Files.write(fileP, sqlStatements, StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -49,6 +65,8 @@ public class STEValidation {
     public static void fetchCommandLineArgs(String[] cmdLinArgs) {
         if (cmdLinArgs.length > 0) {
             email = cmdLinArgs[0];
+            infilePath = cmdLinArgs[1];
+            System.out.println(infilePath);
         } else {
             System.out.println("Email not provided as Command Line Argument.");
         }
@@ -60,10 +78,11 @@ public class STEValidation {
         List<String> cqlStatements = new ArrayList<String>();
 
         fetchCommandLineArgs(args);
-        jenkinsWorkspace = System.getenv("WORKSPACE"); //Jenkins Current Workspace
+        //jenkinsWorkspace = System.getenv("WORKSPACE"); //Jenkins Current Workspace
 
         try {
-            FileReader reader = new FileReader(jenkinsWorkspace + "\\" + FILE_NAME);
+            //FileReader reader = new FileReader(jenkinsWorkspace + "\\" + FILE_NAME);
+            FileReader reader = new FileReader(infilePath);
             br = new BufferedReader(reader);
             String line = br.readLine();
             int noOfLines = 0;
