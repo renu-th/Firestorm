@@ -1,8 +1,21 @@
+/*************************************************************************
+
+ADOBE CONFIDENTIAL
+Copyright 2019 Adobe
+All Rights Reserved.
+NOTICE: All information contained herein is, and remains
+the property of Adobe and its suppliers, if any. The intellectual
+and technical concepts contained herein are proprietary to Adobe
+and its suppliers and are protected by all applicable intellectual
+property laws, including trade secret and copyright laws.
+Dissemination of this information or reproduction of this material
+is strictly forbidden unless prior written permission is obtained
+from Adobe.
+**************************************************************************/
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,65 +30,83 @@ import java.util.List;
  * @author tat13876 (Renuka) 
  * @version 1.0
  * @since   2019-06-26 
- * GIT Repo: https://git.corp.adobe.com/Ecommerce/OrderCaptureScripts
- * JIRA Issue: https://jira.corp.adobe.com/browse/ECOMM-73133
  */
-public class jenkinsJobSETValidationScript {
+public class STEValidation {
 
-	private static final String DELIMITER = ",";
-	private static final String SQL_OUTFILE = "\\sqlInsertScripts.sql";
-	private static final String CQL_OUTFILE = "\\cqlInsertScripts.txt";
-	private final static String sqlTemplate = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
-	private final static String cqlTemplate = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
-	private static String jenkinsWorkspace; 
- 
-	public static int generaterandomID() {
-		int randNum = 0;
-		randNum = (int) ((Math.random() * 90000000) + 10000000);
-		return randNum;
-	}
+    private static final String DELIMITER = ",";
+    private static final String SQL_OUTFILE = "\\sqlInsertScripts.sql";
+    private static final String CQL_OUTFILE = "\\cqlInsertScripts.txt";
+    private static final String SQL_TEMPLATE = "INSERT INTO EduValidation.EDU_VALIDATIONS(ID,USER_TYPE,COUNTRY,AREA_OF_STUDY,GRADUATION_YEAR,GRADUATION_MONTH,STATUS,EMAIL_ID,PERSON_ID) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s');";
+    private static final String CQL_TEMPLATE = "INSERT INTO edu_validations.edu_validations(id,user_type,country,area_of_study,graduation_year,graduation_month,status,email,person_id,externally_verified,documents_uploaded,vendor_approved_status) VALUES ('%s','%s','%s','%s',%s,%s,'%s','%s','%s',%s,%s,%s);";
+    private static final String FILE_NAME = "DATA_FILE";
+    private static final String BOOL_VALUE = "False";
 
-	public static void writeToFile(List<String> sqlStatements, String fileName) {
-		Path fileP = Paths.get(jenkinsWorkspace+ fileName);
-		try {
-			Files.write(fileP, sqlStatements, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
+    private static String infilePath;
+    private static String outfilePath;
+    private static String email;
+    private static BufferedReader br;
 
-	}
-	
-	public static void main(String[] args) {
-		List<String> sqlStatements = new ArrayList<>();
-		List<String> cqlStatements = new ArrayList<>();		
-		String csvFile = System.getenv("DATA_FILE"); // Jenkins Build Parameter - Input CSV File
-		String email = System.getenv("EMAIL"); // Jenkins Build Parameter - Email
-		jenkinsWorkspace = System.getenv("WORKSPACE"); //Jenkins Current Workspace
-		if(!csvFile.isEmpty())
-		{		
-			int startID = generaterandomID();
-			try {
-					FileReader reader = new FileReader(jenkinsWorkspace+"\\"+csvFile);
-					BufferedReader br = new BufferedReader(reader);
-					String line = br.readLine();
-					int noOfLines = 0;
-					while ((line = br.readLine()) != null) {
-						String[] values = line.split(DELIMITER);
-						startID++; noOfLines++;
-						sqlStatements.add(String.format(sqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(), values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0]));
-						cqlStatements.add(String.format(cqlTemplate,startID+"-D",values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(),values[11].toUpperCase(),values[12], values[13], values[9].toUpperCase(),email, values[0], false, false, false));	
-					}
-					writeToFile(sqlStatements, SQL_OUTFILE); // SQL Scripts
-					writeToFile(cqlStatements, CQL_OUTFILE); // Cassandra Scripts
-					System.out.print("Generated " + noOfLines + " SQL and CQL Insert Scripts.");
-			} catch (FileNotFoundException e) {
-				System.out.println(e.getMessage());
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-			}
-		}
-		else
-			System.out.println("No File Found");
-	}
+    public static String generateId() {
+        String id = UUIDGeneratorUtil.getUUID();
+        id = id.concat("-D");
+        return id;
+    }
+
+    public static void writeToFile(List<String> sqlStatements, String fileName) {
+        //Path fileP = Paths.get(jenkinsWorkspace + fileName);
+        Path fileP = Paths.get(outfilePath);
+        try {
+            Files.write(fileP, sqlStatements, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void fetchCommandLineArgs(String[] cmdLinArgs) {
+        if (cmdLinArgs.length > 0) {
+            email = cmdLinArgs[0];
+            infilePath = cmdLinArgs[1];
+            System.out.println(infilePath);
+        } else {
+            System.out.println("Email not provided as Command Line Argument.");
+        }
+
+    }
+
+    public static void main(String[] args) {
+        List<String> sqlStatements = new ArrayList<String>();
+        List<String> cqlStatements = new ArrayList<String>();
+
+        fetchCommandLineArgs(args);
+        //jenkinsWorkspace = System.getenv("WORKSPACE"); //Jenkins Current Workspace
+
+        try {
+            //FileReader reader = new FileReader(jenkinsWorkspace + "\\" + FILE_NAME);
+            FileReader reader = new FileReader(infilePath);
+            br = new BufferedReader(reader);
+            String line = br.readLine();
+            int noOfLines = 0;
+            while ((line = br.readLine()) != null) {
+                String id = generateId();
+                String[] values = line.split(DELIMITER);
+                noOfLines++;
+                sqlStatements.add(String.format(SQL_TEMPLATE, id, values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(),
+                        values[11].toUpperCase(), values[12], values[13], values[9].toUpperCase(), email, values[0]));
+                cqlStatements.add(String.format(CQL_TEMPLATE, id, values[10].toUpperCase(), values[8].substring(0, 2).toUpperCase(),
+                        values[11].toUpperCase(), values[12], values[13], values[9].toUpperCase(), email, values[0], BOOL_VALUE, BOOL_VALUE,
+                        BOOL_VALUE));
+            }
+
+            writeToFile(sqlStatements, SQL_OUTFILE);
+            writeToFile(cqlStatements, CQL_OUTFILE);
+
+            System.out.println("Generated " + noOfLines + " SQL and CQL Insert Scripts.");
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }
