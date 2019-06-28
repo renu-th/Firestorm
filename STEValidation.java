@@ -60,11 +60,11 @@ public class STEValidation {
     }
 
     public static boolean fetchCommandLineArgs(String[] cmdLinArgs) {
-        if (cmdLinArgs.length > 0 && cmdLinArgs.length == 3) {
+        if (cmdLinArgs.length > 0 && cmdLinArgs.length == 4) {
             email = cmdLinArgs[0];
             inFilePath = cmdLinArgs[1];
             sqlFilePath = cmdLinArgs[2];
-            cqlFilePath = cmdLinArgs[2];
+            cqlFilePath = cmdLinArgs[3];
         } else {
             System.out.println("Not enough Command Line Arguments being passed.");
             return false;
